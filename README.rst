@@ -10,7 +10,7 @@ This is especially useful for small sites hosted on Heroku, which does not allow
 writing to local disk. The ``REDISTOGO_URL`` environment variable is read,
 falling back to the localhost default port.
 
-Code is based on maxpert_’s code (see blog post_)
+Code is based on maxpert_’s snippet (see blog post_)
 
 .. _maxpert: https://github.com/maxpert
 .. _post: http://blog.creapptives.com/post/32262168370/python-whoosh-with-redis-storage
@@ -30,6 +30,8 @@ Configure your Haystack connections in ``settings.py``::
 
 Installation
 ------------
+
+Currently some in-development features are still needed::
 
     $ pip install -e git+https://github.com/andymccurdy/redis-py.git@master@egg=redis
     $ pip install -e git+https://github.com/toastdriven/django-haystack.git@master#egg=django-haystack
