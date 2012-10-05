@@ -35,4 +35,4 @@ Currently some in-development features are still needed::
 
     $ pip install -e git+https://github.com/andymccurdy/redis-py.git@master@egg=redis
     $ pip install -e git+https://github.com/toastdriven/django-haystack.git@master#egg=django-haystack
-    $ pip install -e git+https://github.com/jokull/haystack-redis-backend.git@master#egg=haystack-redis-engine
+    $ pip install -e git+https://github.com/jokull/haystack-redis.git@master#egg=haystack-redis
