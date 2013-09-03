@@ -1,17 +1,17 @@
 import os
 from cStringIO import StringIO
 from threading import Lock
+import tempfile
 
 from redis import from_url as redis
 
 from whoosh.index import _DEF_INDEX_NAME, EmptyIndexError
 from whoosh.qparser import QueryParser
 from whoosh.filedb.structfile import StructFile
-from whoosh.filedb.filestore import Storage, create_index, open_index
+from whoosh.filedb.filestore import Storage, FileStorage
+from whoosh.util import random_name
 
 from haystack.backends.whoosh_backend import WhooshSearchBackend, WhooshEngine
-
-redis_url = os.environ.get('REDISTOGO_URL', 'redis://localhost:6379')
 
 
 class RedisSearchBackend(WhooshSearchBackend):
@@ -47,19 +47,13 @@ class RedisStorage(Storage):
     def __file(self, name):
         return self.redis.hget("RedisStore:%s" % self.folder, name)
 
-    def __init__(self, namespace='whoosh'):
+    def __init__(self, redis_url, namespace='whoosh'):
         self.folder = namespace
         self.redis = redis(redis_url)
         self.locks = {}
 
-    def create_index(self, schema, indexname=_DEF_INDEX_NAME):
-        return create_index(self, schema, indexname)
-
     def file_modified(self, name):
         return -1
-
-    def open_index(self, indexname=_DEF_INDEX_NAME, schema=None):
-        return open_index(self, schema, indexname)
 
     def list(self):
         return self.redis.hkeys("RedisStore:%s" % self.folder)
@@ -113,4 +107,11 @@ class RedisStorage(Storage):
         if name not in self.locks:
             self.locks[name] = Lock()
         return self.locks[name]
+
+    def temp_storage(self, name=None):
+        tdir = tempfile.gettempdir()
+        name = name or "%s.tmp" % random_name()
+        path = os.path.join(tdir, name)
+        tempstore = FileStorage(path)
+        return tempstore.create()
 
